@@ -1,0 +1,21 @@
+This is a reference application for the Bazaarvoice API.
+
+The application periodically fetches recent reviews using Bazaarvoice API and displays reviews using Google Earth.
+It demonstrates a client-side mash-up of the following three API's:
+
+1. Bazaarvoice API
+2. Google Earth API
+3. Digital Element IP Intelligence API (hosted by Infochimps)
+
+The application is using JSONP to make calls to Bazaarvoice and geolocation API's.
+
+In order to run the application, do the following:
+
+1. Get the code from github (download or clone)
+2. Replace YOUR_BAZAARVOICE_API_KEY with your Bazaarvoice API key in scripts/earth_reviews.js
+3. Replace YOUR_INFOCHIMPS_API_KEY with your Infochimps API key in scripts/earth_reviews.js.
+   Register for a free account on infochimps.com.
+4. Open index.html in a browser
+5. Install Google Earth plug-in unless you already have it, and refresh the page.
+ 
+Note that Google Earth works on Windows and Apple OS. 

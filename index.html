@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<title>Bazaarvoice: Changing how the world shops.</title>
+
+<meta charset=utf-8>
+
+<link rel="shortcut icon" href="" type="image/x-icon"/>
+
+<!-- Styles -->
+<link type="text/css" rel="stylesheet" media="all" href="styles/screen.css"/>
+
+<!-- Javascript -->
+<script src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/earth_reviews.js"></script>
+<script type="text/javascript" src="scripts/common.js"></script>
+<script type="text/javascript" charset="utf-8"> 
+	google.load("earth", "1");
+	google.setOnLoadCallback( ER.initialize);
+</script>
+ 
+
+<script type="text/html" id="review_template" charset="utf-8"> 
+        <div class="reviewBalloon" style="width:<%=width%>px;">
+			<div class="image">
+            	<img class="product-image" src="<%=product.ImageUrl%>" title="Product" alt="Product" />
+			</div>
+			<div class="description">
+				<img src="images/rating_<%=Rating%>_0.png" width=137 height=24 alt="Rated <%=Rating%> Stars" />
+				<p class="title"><%=product.Name%></p>
+				<p class="review">"<%=Title%>"</p>
+				<p class="reviewer"><%=author.DisplayName%><br/><%=location.City%>, <%=location.CountryName%><br/><%=date%></p>
+			</div>
+			<div class="clear"></div>
+        </div>
+</script> 
+
+</head>
+<body>
+
+<div id='head'>
+	<div class="container">
+    	<img src="images/bv_logo.png" height="60%" class="logo" alt="Bazaarvoice"/>
+        
+        <h1>Changing the world, one<br/>authentic conversation at a time.</h1>
+    </div>
+    <img src="images/gradient_bg.png" class="gradient" alt=""/>
+</div>
+
+<div id="foot">
+	<div class="container">
+    </div>
+    <img src="images/gradient_bg.png" class="gradient" alt=""/>
+</div>
+
+<div id="fullscreencontainer"></div> 
+<div id="sizecontainer"></div> 
+<div id="content"></div>
+
+</body>
+</html>
