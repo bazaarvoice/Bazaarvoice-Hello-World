@@ -198,9 +198,14 @@ var ER = function() {
         display_on_map : function(data) {
             ER.review_data = data;
             $.each(data, function(i, val) {
+                
+                if (!this.location) {
+                    return;
+                }
+                
                 // Create the placemark
                 var placemark = ER.ge.createPlacemark('');
-                placemark.setName(this.location.City + ', ' + this.location.CountryName);
+                placemark.setName(this.location.FormattedAddress);
                 var reviewtext = this.ReviewText;
                 if (reviewtext !== null) {
                     reviewtext = reviewtext.substring(0, 100);
@@ -245,26 +250,43 @@ var ER = function() {
         },
 
         get_location : function(review) {
-            // gets geolocation data by IP address using Infochimps API
-            $.getJSON(
-                    'http://api.infochimps.com/web/an/de/geo.json?callback=?', {
-                        ip: review.IpAddress,
-                        apikey: 'YOUR_INFOCHIMPS_API_KEY'
+            // Gets geolocation data by user entered location, using Yahoo! PlaceFinder API.  
+            // Using Yahoo!'s service instead of Google since Yahoo! allows 50,000 requests
+            // per day, whereas Google only allows 2,500 requests per day.
+            
+            // http://developer.yahoo.com/geo/placefinder/
+            // http://developer.yahoo.com/dashboard/createKey.html
+            
+            $.getJSON('http://query.yahooapis.com/v1/public/yql?callback=?', {
+                        format:'json',
+                        appid:'YOUR_YAHOO_APP_ID',
+                        q: 'select * from geo.placefinder where text="' + ((review.author && review.author.Location) ? review.author.Location : review.UserLocation) + '"'
                     },
                     function(response) {
-                        review.location = {
-                            CountryName: response.country,
-                            City: response.city,
-                            Latitude: response.lat,
-                            Longitude: response.longitude};
-                    }
-                    );
+                        if (!response.error && response.query.count > 0) {
+                            var primaryResult = response.query.results.Result;
+
+                            var addy = (primaryResult.city ? primaryResult.city + ', ' : '');
+                            addy += ((primaryResult.countrycode === "US" && primaryResult.statecode ) ? primaryResult.statecode + ' ' : '');
+                            addy += (primaryResult.country ? primaryResult.country : '');
+
+                            review.location = {
+                                FormattedAddress: addy,
+                                Latitude: primaryResult.latitude,
+                                Longitude: primaryResult.longitude  
+                            };
+                            
+                        }
+                    }); 
         },
+
+
+
 
         load_data : function(firstLoad) {
             // load recent reviews using Bazaarvoice API
-            $.getJSON('http://api.bazaarvoice.com/data/0001/reviews.json?callback=?', {
-                        apiversion: '4.7',
+            $.getJSON('http://YOUR_BAZAARVOICE_HOSTNAME/data/reviews.json?callback=?', {
+                        apiversion: '4.9',
                         passkey: 'YOUR_BAZAARVOICE_API_KEY',
                         sort: 'submissiontime:desc',
                         include: 'products,authors',
@@ -273,24 +295,30 @@ var ER = function() {
                     function(response) {
                         reviews = [];
                         for (var i = 0; i < response.Results.length; i++) {
-                            var review = response.Data.Reviews[response.Results[i].Id];
-                            review.author = response.Data.Authors[review.AuthorID];
-                            review.product = response.Data.Products[review.ProductID];
+                            var review = response.Results[i];
+                            if (response.Includes.Authors) {
+                                review.author = response.Includes.Authors[review.AuthorId];
+                            }
+                            review.product = response.Includes.Products[review.ProductId];
                             review.date = new Date(review.SubmissionTime).toTimeString();
 
-                            // get reviewer location using IP address
-                            ER.get_location(review);
+                            // get reviewer location only if there is some geocodable attribute
+                            if (review.UserLocation || (review.author && review.author.Location)) {
+                                
+                                ER.get_location(review)
+                                reviews.push(review);
 
-                            reviews.push(review);
+                            }
+                            
                         }
 
                         setTimeout('ER.display_on_map(reviews)', 5000);
 
                         if (firstLoad) {
-                            ER.interval = setInterval(ER.cycle_review_display, 10000);
+                            ER.interval = setInterval(ER.cycle_review_display, 15000);
                         }
                     }
-                    );
+                );
         }
     };
 }();
