@@ -96,8 +96,7 @@ var ER = function() {
         toggleFullScreen : function() {
             if (ER.fullScreenState === true) {
                 ER.makeNormalScreen();
-            }
-            else {
+            } else {
                 ER.makeFullScreen();
             }
         },
@@ -133,7 +132,7 @@ var ER = function() {
 
         zoom_to_review : function(review, index) {
             ER.ge.getOptions().setFlyToSpeed(0.1);
-            if (null === review || undefined === review.location) {
+            if (!review || !review.location) {
                 return;
             }
             var lat = parseFloat(review.location.Latitude);
@@ -149,23 +148,23 @@ var ER = function() {
             lookAt.set(lat, lon, 10, ER.ge.ALTITUDE_RELATIVE_TO_GROUND, 0, 10, altitude);
             ER.ge.getView().setAbstractView(lookAt);
 
-            if (review.Title !== null) {
+            if (review.Title) {
                 review.Title = review.Title.substring(0, 100);
             } else {
                 review.Title = 'N/A';
             }
 
-            if (review.ReviewText !== null) {
+            if (review.ReviewText) {
                 review.ReviewText = review.ReviewText.substring(0, 100);
             } else {
                 review.ReviewText = 'N/A';
             }
 
-            if (review.author === null) {
+            if (!review.author) {
                 review.author = "Anonymous"
             }
 
-            if (review.location.City === null) {
+            if (!review.location.City) {
                 review.location.City = 'Unknown city';
             }
 
@@ -207,7 +206,7 @@ var ER = function() {
                 var placemark = ER.ge.createPlacemark('');
                 placemark.setName(this.location.FormattedAddress);
                 var reviewtext = this.ReviewText;
-                if (reviewtext !== null) {
+                if (reviewtext) {
                     reviewtext = reviewtext.substring(0, 100);
                 } else {
                     reviewtext = '';
@@ -264,7 +263,10 @@ var ER = function() {
                     },
                     function(response) {
                         if (!response.error && response.query.count > 0) {
-                            var primaryResult = response.query.results.Result;
+                            var resultObj = response.query.results.Result;
+
+                            // If there is more than one result, the Result object is an array.  Otherwise it's an object.
+                            var primaryResult = (resultObj.constructor.toString().indexOf("Array") != -1) ? resultObj[0] : resultObj;
 
                             var addy = (primaryResult.city ? primaryResult.city + ', ' : '');
                             addy += ((primaryResult.countrycode === "US" && primaryResult.statecode ) ? primaryResult.statecode + ' ' : '');
