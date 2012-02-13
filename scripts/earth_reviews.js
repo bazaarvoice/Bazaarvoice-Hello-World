@@ -249,50 +249,33 @@ var ER = function() {
         },
 
         get_location : function(review) {
-            // Gets geolocation data by user entered location, using Yahoo! PlaceFinder API.  
-            // Using Yahoo!'s service instead of Google since Yahoo! allows 50,000 requests
-            // per day, whereas Google only allows 2,500 requests per day.
-            
-            // http://developer.yahoo.com/geo/placefinder/
-            // http://developer.yahoo.com/dashboard/createKey.html
-            
-            $.getJSON('http://query.yahooapis.com/v1/public/yql?callback=?', {
-                        format:'json',
-                        appid:'YOUR_YAHOO_APP_ID',
-                        q: 'select * from geo.placefinder where text="' + ((review.author && review.author.Location) ? review.author.Location : review.UserLocation) + '"'
+            // gets geolocation data by IP address using Infochimps API
+            $.getJSON(
+                    'http://api.infochimps.com/web/an/de/geo.json?callback=?', {
+                        ip: review.IPAddress,
+                        apikey: 'YOUR_INFOCHIMPS_API_KEY'
                     },
                     function(response) {
-                        if (!response.error && response.query.count > 0) {
-                            var resultObj = response.query.results.Result;
+                        var addy = (response.city ? response.city + ', ' : '');
+                        addy += (response.region ? response.region + ' ' : '');
+                        addy += (response.country ? response.country : '');
 
-                            // If there is more than one result, the Result object is an array.  Otherwise it's an object.
-                            var primaryResult = (resultObj.constructor.toString().indexOf("Array") != -1) ? resultObj[0] : resultObj;
-
-                            var addy = (primaryResult.city ? primaryResult.city + ', ' : '');
-                            addy += ((primaryResult.countrycode === "US" && primaryResult.statecode ) ? primaryResult.statecode + ' ' : '');
-                            addy += (primaryResult.country ? primaryResult.country : '');
-
-                            review.location = {
-                                FormattedAddress: addy,
-                                Latitude: primaryResult.latitude,
-                                Longitude: primaryResult.longitude  
-                            };
-                            
-                        }
+                        review.location = {
+                            FormattedAddress: addy,
+                            Latitude: response.lat,
+                            Longitude: response.longitude  
+                        };
                     }); 
         },
-
-
-
 
         load_data : function(firstLoad) {
             // load recent reviews using Bazaarvoice API
             $.getJSON('http://YOUR_BAZAARVOICE_HOSTNAME/data/reviews.json?callback=?', {
-                        apiversion: '4.9',
+                        apiversion: '5.1',
                         passkey: 'YOUR_BAZAARVOICE_API_KEY',
                         sort: 'submissiontime:desc',
                         include: 'products,authors',
-                        limit: '25'
+                        limit: '25'                        
                     },
                     function(response) {
                         reviews = [];
@@ -305,7 +288,7 @@ var ER = function() {
                             review.date = new Date(review.SubmissionTime).toTimeString();
 
                             // get reviewer location only if there is some geocodable attribute
-                            if (review.UserLocation || (review.author && review.author.Location)) {
+                            if (review.IPAddress) {
                                 
                                 ER.get_location(review)
                                 reviews.push(review);

@@ -5,7 +5,8 @@ It demonstrates a client-side mash-up of the following three API's:
 
 1. Bazaarvoice API
 2. Google Earth and JS API
-3. Yahoo! YQL PlaceFinder geolocation API
+3. Digital Element IP Intelligence Geolocation API (hosted by Infochimps)
+
 
 The application is using JSONP to make calls to Bazaarvoice and geolocation API's.
 
@@ -13,16 +14,14 @@ In order to run the application, do the following:
 
 1. Get the code from github (download or clone)
 2. Obtain API keys:
-    a.) Obtain a Yahoo! Application ID (api key) from http://developer.yahoo.com/dashboard/createKey.html
-    b.) Obtain a Google JS API key from http://code.google.com/apis/maps/signup.html
-    c.) Obtain a Bazaarvoice API key from http://developer.bazaarvoice.com
+    a.) Obtain a Digital Element IP Intelligence Geolocation API KEY from http://www.infochimps.com/signup
+    b.) Obtain a Bazaarvoice API key from http://developer.bazaarvoice.com
 3. Put in your API keys:
     a.) Replace YOUR_BAZAARVOICE_HOSTNAME with your Bazaarvoice API hostname in scripts/earth_reviews.js
             - for example, production data access URL of: reviews.customername.com
             - for example, staging data access URL of: reviews.customername.com/bvstaging
     b.) Replace YOUR_BAZAARVOICE_API_KEY with your Bazaarvoice API key in scripts/earth_reviews.js
-    c.) Replace YOUR_YAHOO_APP_ID with your Yahoo API key in scripts/earth_reviews.js.
-    d.) Replace YOUR_GOOGLE_API_KEY with your Google API key in index.html
+    c.) Replace YOUR_INFOCHIMPS_API_KEY with your Infochimps API key in scripts/earth_reviews.js.
 4. Open index.html in a browser
 5. Install Google Earth plug-in unless you already have it, and refresh the page.
  
