@@ -22,11 +22,10 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input
 html{width:100%;height:100%;}
 body{width:100%;height:100%;background:#000;font-size:34px;}
 
-.container{height:100%;margin:0 auto;padding:0;text-align:center;font-family:'Helvetica Neue', Helvetica, sans-serif;color:#fff;position:relative;z-index:2;}
+.container{height:100%;margin:0 auto;padding:0;text-align:center;font-family:'Helvetica Neue', Helvetica, sans-serif;color:#fff;position:relative;z-index:2;background-color:#003d4c;}
 .clear{height:1px;clear:both;}
 
 #head, #foot{width:100%;text-align:center;position:absolute;}
-#head .gradient, #foot .gradient{width:100%;height:100%;top:0;left:0;position:absolute;z-index:1;}
 
 #head{height:14%;top:0;left:0;line-height:1.1;}
 #head .logo{margin-right:2%;}
