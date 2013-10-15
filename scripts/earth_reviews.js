@@ -161,7 +161,7 @@ var ER = function() {
             }
 
             if (!review.author) {
-                review.author = "Anonymous"
+                review.author = "Anonymous";
             }
 
             if (!review.location.City) {
@@ -169,7 +169,7 @@ var ER = function() {
             }
 
             var bubbleHTML;
-            var wsize = Math.min(window.innerWidth, window.innerHeight) * .4;
+            var wsize = Math.min(window.innerWidth, window.innerHeight) * 0.4;
             review.width = wsize;
             bubbleHTML = ER.template_fn(review);
 
@@ -249,33 +249,28 @@ var ER = function() {
         },
 
         get_location : function(review) {
-            // gets geolocation data by IP address using Infochimps API
-            $.getJSON(
-                    'http://api.infochimps.com/web/an/de/geo.json?callback=?', {
-                        ip: review.IPAddress,
-                        apikey: 'YOUR_INFOCHIMPS_API_KEY'
-                    },
-                    function(response) {
+            // gets geolocation data by IP address using Smart-IP.net Geo-IP API
+            $.getJSON('http://smart-ip.net/geoip-json/' + review.IPAddress + '?callback=?', function(response) {
                         var addy = (response.city ? response.city + ', ' : '');
                         addy += (response.region ? response.region + ' ' : '');
-                        addy += (response.country ? response.country : '');
+                        addy += (response.countryName ? response.countryName : '');
 
                         review.location = {
                             FormattedAddress: addy,
-                            Latitude: response.lat,
-                            Longitude: response.longitude  
+                            Latitude: response.latitude,
+                            Longitude: response.longitude
                         };
-                    }); 
+                    });
         },
 
         load_data : function(firstLoad) {
             // load recent reviews using Bazaarvoice API
-            $.getJSON('http://YOUR_BAZAARVOICE_HOSTNAME/data/reviews.json?callback=?', {
+            $.getJSON('http://BAZAARVOICE_HOSTNAME/data/reviews.json?callback=?', {
                         apiversion: '5.1',
                         passkey: 'YOUR_BAZAARVOICE_API_KEY',
                         sort: 'submissiontime:desc',
                         include: 'products,authors',
-                        limit: '25'                        
+                        limit: '25'
                     },
                     function(response) {
                         reviews = [];
@@ -290,7 +285,7 @@ var ER = function() {
                             // get reviewer location only if there is some geocodable attribute
                             if (review.IPAddress) {
                                 
-                                ER.get_location(review)
+                                ER.get_location(review);
                                 reviews.push(review);
 
                             }
@@ -300,7 +295,7 @@ var ER = function() {
                         setTimeout('ER.display_on_map(reviews)', 5000);
 
                         if (firstLoad) {
-                            ER.interval = setInterval(ER.cycle_review_display, 15000);
+                            ER.interval = setInterval(ER.cycle_review_display, 18000);
                         }
                     }
                 );
