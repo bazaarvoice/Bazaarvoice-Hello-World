@@ -1,7 +1,7 @@
 # Bazaarvoice Hello World
 This is a reference application for the Bazaarvoice Conversations API.
 
-The application periodically fetches recent reviews using Bazaarvoice Conversations API and displays reviews using Google Earth.
+The application periodically fetches recent reviews using the Bazaarvoice Conversations API and displays reviews using Google Earth.
 It demonstrates a client-side mash-up of the following three API's:
 
 1. [Bazaarvoice Conversations API](https://developer.bazaarvoice.com/docs/read/conversations)
